@@ -1,5 +1,6 @@
 package digital.refeicao.models.login;
 
+import digital.refeicao.models.unidade.Unidade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,9 @@ public class Conta {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "conta", orphanRemoval = true)
     private List<Usuario> usuarios;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conta", orphanRemoval = true)
+    private List<Unidade> unidades;
 
     @Column
     private String nome;

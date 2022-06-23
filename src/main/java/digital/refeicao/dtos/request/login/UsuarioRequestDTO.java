@@ -23,12 +23,6 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "O nome deve ser preennchido")
     private String nome;
 
-    @NotNull(message = "O endereço deve ser preennchido")
-    @Valid
-    private Endereco endereco;
-
-    private String doc_registro;
-
     @NotBlank(message = "O email deve ser preennchido")
     @Email(message = "Email inválido")
     private String email;
@@ -36,10 +30,16 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "A senha deve ser preennchido")
     private String senha;
 
+    @NotNull(message = "O endereço deve ser preennchido")
+    @Valid
+    private Endereco endereco;
+
     @NotNull(message = "O cargo deve ser preennchido")
     private Cargo cargo;
 
     @NotBlank(message = "O nome da conta deve ser preennchido")
     private String nomeConta;
+
+    private String doc_registro;
 
 }

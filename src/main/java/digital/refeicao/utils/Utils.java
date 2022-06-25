@@ -2,6 +2,7 @@ package digital.refeicao.utils;
 
 import digital.refeicao.domains.Cargo;
 import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
+import digital.refeicao.dtos.response.login.UsuarioCompletoResponseDTO;
 import digital.refeicao.models.login.Conta;
 import digital.refeicao.models.login.Usuario;
 import digital.refeicao.models.requisicao.Erro;
@@ -20,6 +21,10 @@ public class Utils {
         usuario.setCargo(Cargo.PROPRIETARIO);
         usuario.setSenha(Utils.encriptarStringBCrypt(u.getSenha()));
         return usuario;
+    }
+
+    public static UsuarioCompletoResponseDTO converterUsuarioCompletoResponseDTO(Usuario u){
+        return new ModelMapper().map(u, UsuarioCompletoResponseDTO.class);
     }
 
     public static String encriptarStringBCrypt(String str){

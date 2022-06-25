@@ -15,7 +15,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/login")
-
 public class LoginController {
 
 
@@ -34,6 +33,11 @@ public class LoginController {
     @PostMapping("/on")
     public ResponseEntity<?> registrarUsuario(@RequestBody @Valid UsuarioLoginRequestDTO usuario) {
         return loginService.on(usuario);
+    }
+
+    @GetMapping("/usuario/{prk}")
+    public ResponseEntity<?> getUsuarioPorPrk(@RequestHeader String token,@PathVariable Long prk) {
+        return loginService.getUsuarioPorPrk(prk,token);
     }
 
 }

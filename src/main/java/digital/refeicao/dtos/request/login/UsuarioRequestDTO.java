@@ -34,7 +34,6 @@ public class UsuarioRequestDTO {
     @Valid
     private Endereco endereco;
 
-    @NotNull(message = "O cargo deve ser preennchido")
     private Cargo cargo;
 
     @NotBlank(message = "O nome da conta deve ser preennchido")

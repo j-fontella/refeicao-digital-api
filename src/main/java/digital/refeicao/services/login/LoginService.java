@@ -1,11 +1,10 @@
 package digital.refeicao.services.login;
 
-import digital.refeicao.domains.Cargo;
 import digital.refeicao.domains.Erros;
 import digital.refeicao.dtos.request.login.UsuarioLoginRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
+import digital.refeicao.dtos.response.login.UsuarioCompletoResponseDTO;
 import digital.refeicao.dtos.response.login.UsuarioResponseDTO;
-import digital.refeicao.models.login.Conta;
 import digital.refeicao.models.login.Token;
 import digital.refeicao.models.login.Usuario;
 import digital.refeicao.models.requisicao.Erro;
@@ -58,6 +57,17 @@ public class LoginService {
         }
         Token token = tokenService.gerarToken(usuarioConectando.getPrk());
         UsuarioResponseDTO response = new UsuarioResponseDTO(usuarioConectando.getPrk(), usuarioConectando.getNome(), token.getHash());
+        return ResponseEntity.ok().body(response);
+    }
+
+    public ResponseEntity<?> getUsuarioPorPrk(Long prk, String token) {
+        tokenService.validarToken(token,prk);
+        Optional<Usuario> u = usuarioRepository.findById(prk);
+        if (u.isEmpty()) {
+            Erro erro = Utils.gerarErro(Erros.USUARIO_NAO_ENCONTRADO.getDescricao());
+            return ResponseEntity.badRequest().body(erro);
+        }
+        UsuarioCompletoResponseDTO response = Utils.converterUsuarioCompletoResponseDTO(u.get());
         return ResponseEntity.ok().body(response);
     }
 }

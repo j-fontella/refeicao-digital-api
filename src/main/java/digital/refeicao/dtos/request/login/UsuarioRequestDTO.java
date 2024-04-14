@@ -1,7 +1,7 @@
 package digital.refeicao.dtos.request.login;
 
 import digital.refeicao.domains.Cargo;
-import digital.refeicao.models.endereco.Endereco;
+import digital.refeicao.models.login.Endereco;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +39,6 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "O nome da conta deve ser preennchido")
     private String nomeConta;
 
-    private String doc_registro;
+    private String docRegistro;
 
 }

@@ -5,7 +5,7 @@ import digital.refeicao.domains.Cargo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import digital.refeicao.models.endereco.Endereco;
+
 import javax.persistence.*;
 
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class Usuario {
     private Endereco endereco;
 
     @Column(columnDefinition = "varchar(14)")
-    private String doc_registro;
+    private String docRegistro;
 
     @Column(columnDefinition = "varchar(150)")
     private String email;

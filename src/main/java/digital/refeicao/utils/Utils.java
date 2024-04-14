@@ -20,6 +20,7 @@ public class Utils {
         usuario.setConta(novaConta);
         usuario.setCargo(Cargo.PROPRIETARIO);
         usuario.setSenha(Utils.encriptarStringBCrypt(u.getSenha()));
+        usuario.setDocRegistro(u.getDocRegistro());
         return usuario;
     }
 

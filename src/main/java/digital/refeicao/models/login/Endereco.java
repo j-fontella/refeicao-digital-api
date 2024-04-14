@@ -1,4 +1,4 @@
-package digital.refeicao.models.endereco;
+package digital.refeicao.models.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @SuperBuilder
 @FieldNameConstants
 @Entity
-@Table(name = "Endereco", schema = "endereco")
+@Table(name = "Endereco", schema = "login")
 public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

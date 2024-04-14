@@ -1,6 +1,5 @@
 package digital.refeicao.models.produto;
 
-import digital.refeicao.models.endereco.Endereco;
 import digital.refeicao.models.unidade.Unidade;
 import lombok.AllArgsConstructor;
 import lombok.Data;

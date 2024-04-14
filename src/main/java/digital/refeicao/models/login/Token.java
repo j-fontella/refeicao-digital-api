@@ -21,7 +21,7 @@ public class Token {
     private String hash;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "frk_usuario", referencedColumnName = "prk")
+    @JoinColumn(name = "frkUsuario", referencedColumnName = "prk")
     private Usuario usuario;
 
     @Column

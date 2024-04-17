@@ -63,14 +63,14 @@ public class TokenService {
     public Token gerarTokenRecuperacao(Usuario usuario){
         limparToken(usuario.getPrk());
         Token token = getToken(usuario);
-        token.setDataExpiracao(LocalDateTime.now().plusMinutes(30));
+        token.setDataExpiracao(LocalDateTime.now().plusMinutes(5));
         int primeiroNumero = ThreadLocalRandom.current().nextInt(1, 10);
         int segundoNumero = ThreadLocalRandom.current().nextInt(10);
         int terceiroNumero = ThreadLocalRandom.current().nextInt(10);
         int quartoNumero = ThreadLocalRandom.current().nextInt(10);
         int numeroFormado = Integer.parseInt("" + primeiroNumero + segundoNumero + terceiroNumero + quartoNumero);
         token.setHash(Integer.toString(numeroFormado));
-        return token;
+        return tokenRepository.save(token);
     }
 
     private Token getToken(Usuario usuario){

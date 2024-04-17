@@ -1,5 +1,6 @@
 package digital.refeicao.controllers.login;
 
+import digital.refeicao.dtos.request.login.UsuarioAlteracaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioLoginRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRecuperacaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
@@ -32,13 +33,18 @@ public class LoginController {
     }
 
     @PostMapping("/on")
-    public ResponseEntity<?> registrarUsuario(@RequestBody @Valid UsuarioLoginRequestDTO usuario) {
+    public ResponseEntity<?> on(@RequestBody @Valid UsuarioLoginRequestDTO usuario) {
         return loginService.on(usuario);
     }
 
     @PostMapping("/recuperar")
     public ResponseEntity<?> recuperarSenha(@RequestBody @Valid UsuarioRecuperacaoRequestDTO usuario) {
         return loginService.recuperarSenha(usuario);
+    }
+
+    @PostMapping("/alterar")
+    public ResponseEntity<?> alterarSenha(@RequestBody @Valid UsuarioAlteracaoRequestDTO usuario) {
+        return loginService.alterarSenha(usuario);
     }
 
     @GetMapping("/usuario/{prk}")

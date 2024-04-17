@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token,Long> {
 
-    @Query(value = "select * from login.token where frk_usuario = :prkUsuario", nativeQuery = true)
+    @Query(value = "select * from login.token where frkusuario = :prkUsuario", nativeQuery = true)
     Optional<Token> findByFrkUsuario(Long prkUsuario);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from login.token where frk_usuario = :prkUsuario", nativeQuery = true)
+    @Query(value = "delete from login.token where frkusuario = :prkUsuario", nativeQuery = true)
     void limpar(Long prkUsuario);
 }

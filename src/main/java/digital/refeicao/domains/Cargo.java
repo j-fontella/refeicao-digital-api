@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum Cargo {
     OPERADOR("Operador"),
     ADMINISTRADOR("Administrador"),
-    PROPRIETARIO("Proprietario")
-    ;
+    PROPRIETARIO("Proprietario");
 
     private final String descricao;
 

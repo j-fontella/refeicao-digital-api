@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static digital.refeicao.domains.Erros.USUARIO_JA_CADASTRADO;
+import static digital.refeicao.domains.Erros.USUARIO_NAO_ENCONTRADO;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -41,6 +44,7 @@ public class Usuario {
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="frk_conta", referencedColumnName = "prk")
     private Conta conta;
+
 
 
 }

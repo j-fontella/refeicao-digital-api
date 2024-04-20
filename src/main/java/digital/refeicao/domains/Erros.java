@@ -8,7 +8,10 @@ public enum Erros {
     USUARIO_NAO_ENCONTRADO("Este usuário não está cadastrado no sistema."),
 
     CONTATE_O_SUPORTE("Erro ao realizar requisição, contate o suporte"),
-    USUARIO_JA_CADASTRADO("Este usuário já está cadastrado no sistema");
+    //Ausencia de Token no header da requisição
+    CONTATE_O_SUPORTE_1("Erro número 1, contate o suporte com este código"),
+    USUARIO_JA_CADASTRADO("Este usuário já está cadastrado no sistema"),
+    ACESSO_EXPIRADO("Acesso expirado, realize o login novamente");
 
 
 
@@ -16,5 +19,10 @@ public enum Erros {
 
     Erros(String descricao) {
         this.descricao = descricao;
+    }
+
+    @Override
+    public String toString() {
+        return descricao;
     }
 }

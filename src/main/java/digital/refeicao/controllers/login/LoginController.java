@@ -1,14 +1,11 @@
 package digital.refeicao.controllers.login;
 
+import digital.refeicao.annotations.token.ValidateToken;
 import digital.refeicao.dtos.request.login.UsuarioAlteracaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioLoginRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRecuperacaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
 import digital.refeicao.services.login.LoginService;
-import digital.refeicao.services.login.TokenService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +28,6 @@ public class LoginController {
     public ResponseEntity<?> registrarUsuario(@RequestBody @Valid UsuarioRequestDTO usuario) {
         return loginService.registrarUsuario(usuario);
     }
-
     @PostMapping("/on")
     public ResponseEntity<?> on(@RequestBody @Valid UsuarioLoginRequestDTO usuario) {
         return loginService.on(usuario);
@@ -46,10 +42,10 @@ public class LoginController {
     public ResponseEntity<?> alterarSenha(@RequestBody @Valid UsuarioAlteracaoRequestDTO usuario) {
         return loginService.alterarSenha(usuario);
     }
-
+    @ValidateToken
     @GetMapping("/usuario/{prk}")
-    public ResponseEntity<?> getUsuarioPorPrk(@RequestHeader String token,@PathVariable Long prk) {
-        return loginService.getUsuarioPorPrk(prk,token);
+    public ResponseEntity<?> getUsuarioPorPrk(@PathVariable Long prk) {
+        return loginService.getUsuarioPorPrk(prk);
     }
 
 }

@@ -1,34 +1,33 @@
 package digital.refeicao.services.login;
 
-import digital.refeicao.domains.Erros;
+import digital.refeicao.domains.Cargo;
 import digital.refeicao.dtos.request.login.UsuarioAlteracaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioLoginRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRecuperacaoRequestDTO;
 import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
 import digital.refeicao.dtos.response.login.UsuarioCompletoResponseDTO;
 import digital.refeicao.dtos.response.login.UsuarioResponseDTO;
+import digital.refeicao.exceptions.NegocioException;
+import digital.refeicao.models.login.Conta;
 import digital.refeicao.models.login.Token;
 import digital.refeicao.models.login.Usuario;
-import digital.refeicao.models.requisicao.Erro;
 import digital.refeicao.repositorys.login.UsuarioRepository;
 import digital.refeicao.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 import java.util.Optional;
 
-import static digital.refeicao.utils.Utils.encriptarStringBCrypt;
+import static digital.refeicao.domains.Erros.*;
+import static digital.refeicao.utils.Utils.*;
 
 @Service
 public class LoginService {
-
-
 
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
@@ -41,64 +40,47 @@ public class LoginService {
     }
 
     public ResponseEntity<?> registrarUsuario(UsuarioRequestDTO usuario) {
-        Optional<Usuario> u = usuarioRepository.findByEmail(usuario.getEmail());
-        if (u.isPresent()) {
-            Erro erro = Utils.gerarErro(Erros.USUARIO_JA_CADASTRADO.getDescricao());
-            return ResponseEntity.badRequest().body(erro);
-        }
-        Usuario novoUsuario = Utils.converterUsuarioRequest(usuario);
-        usuarioRepository.save(novoUsuario);
+        findUsuario(usuario.getPrk(), false);
+        usuarioRepository.save(converterUsuarioRequest(usuario));
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> on(UsuarioLoginRequestDTO usuario) {
-        Optional<Usuario> u = usuarioRepository.findByEmail(usuario.getEmail());
-        if (u.isEmpty()) {
-            Erro erro = Utils.gerarErro(Erros.USUARIO_NAO_ENCONTRADO.getDescricao());
-            return ResponseEntity.badRequest().body(erro);
-        }
-        Usuario usuarioConectando = u.get();
-        BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-        if(!bc.matches(usuario.getSenha(), usuarioConectando.getSenha())){
-            Erro erro = Utils.gerarErro(Erros.SENHA_INCORRETA.getDescricao());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-        }
-        Token token = tokenService.gerarToken(usuarioConectando);
-        UsuarioResponseDTO response = new UsuarioResponseDTO(usuarioConectando.getPrk(), usuarioConectando.getNome(), token.getHash());
-        return ResponseEntity.ok().body(response);
+    private Usuario converterUsuarioRequest(UsuarioRequestDTO u){
+        Usuario usuario = new ModelMapper().map(u, Usuario.class);
+        Conta novaConta = new Conta();
+        novaConta.setNome(u.getNomeConta());
+        usuario.setConta(novaConta);
+        usuario.setCargo(Cargo.PROPRIETARIO);
+        usuario.setSenha(Utils.criptografarBCrypt(u.getSenha()));
+        usuario.setDocRegistro(u.getDocRegistro());
+        return usuario;
     }
 
-    public ResponseEntity<?> getUsuarioPorPrk(Long prk, String token) {
-        tokenService.validarToken(token,prk);
-        Optional<Usuario> u = usuarioRepository.findById(prk);
-        if (u.isEmpty()) {
-            Erro erro = Utils.gerarErro(Erros.USUARIO_NAO_ENCONTRADO.getDescricao());
-            return ResponseEntity.badRequest().body(erro);
-        }
-        UsuarioCompletoResponseDTO response = Utils.converterUsuarioCompletoResponseDTO(u.get());
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<?> on(UsuarioLoginRequestDTO usuario) {
+        Usuario usuarioConectando = findUsuario(usuario.getEmail(), true);
+        validarBCrypt(usuario.getSenha(), usuarioConectando.getSenha(), SENHA_INCORRETA);
+        Token token = tokenService.gerarToken(usuarioConectando);
+        return ResponseEntity.ok().body(new UsuarioResponseDTO(usuarioConectando.getPrk(), usuarioConectando.getNome(), base64Encode(usuarioConectando.getPrk()+":"+token.getHash())));
+    }
+
+    public ResponseEntity<?> getUsuarioPorPrk(Long prk) {
+        return ResponseEntity.ok().body(converterUsuarioCompletoResponseDTO(findUsuario(prk, true)));
+    }
+
+    private UsuarioCompletoResponseDTO converterUsuarioCompletoResponseDTO(Usuario u){
+        return new ModelMapper().map(u, UsuarioCompletoResponseDTO.class);
     }
 
     public ResponseEntity<?> alterarSenha(UsuarioAlteracaoRequestDTO usuarioAlteracaoRequestDTO) {
-        Optional<Usuario> u = usuarioRepository.findByEmail(usuarioAlteracaoRequestDTO.getEmail());
-        if (u.isEmpty()) {
-            Erro erro = Utils.gerarErro(Erros.USUARIO_NAO_ENCONTRADO.getDescricao());
-            return ResponseEntity.badRequest().body(erro);
-        }
-        Usuario usuario = u.get();
+        Usuario usuario = findUsuario(usuarioAlteracaoRequestDTO.getEmail(), true);
         tokenService.validarToken(usuarioAlteracaoRequestDTO.getCodigo(), usuario.getPrk());
-        usuario.setSenha(encriptarStringBCrypt(usuarioAlteracaoRequestDTO.getSenha()));
+        usuario.setSenha(criptografarBCrypt(usuarioAlteracaoRequestDTO.getSenha()));
         usuarioRepository.save(usuario);
         return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<?> recuperarSenha(UsuarioRecuperacaoRequestDTO usuarioRecuperacaoRequestDTO) {
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioRecuperacaoRequestDTO.getEmail());
-        if (usuario.isEmpty()) {
-            Erro erro = Utils.gerarErro(Erros.USUARIO_NAO_ENCONTRADO.getDescricao());
-            return ResponseEntity.badRequest().body(erro);
-        }
-        return enviarEmailRecuperacaoSenha(usuario.get());
+        return enviarEmailRecuperacaoSenha(findUsuario(usuarioRecuperacaoRequestDTO.getEmail(), true));
     }
 
     public ResponseEntity<?> enviarEmailRecuperacaoSenha(Usuario usuario) {
@@ -124,9 +106,6 @@ public class LoginService {
                 + "</div>"
                 + "</body></html>";
 
-
-
-
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -139,5 +118,21 @@ public class LoginService {
 
         }
         return ResponseEntity.ok().build();
+    }
+
+
+    public Usuario findUsuario(Long prk, boolean existente){
+        return validarUsuario(usuarioRepository.findById(prk), existente);
+    }
+
+    public Usuario findUsuario(String email, boolean existente){
+        return validarUsuario(usuarioRepository.findByEmail(email), existente);
+    }
+
+    private Usuario validarUsuario(Optional<Usuario> u, boolean existente) {
+        if (u.isPresent() != existente) {
+            throw new NegocioException(existente ? USUARIO_NAO_ENCONTRADO : USUARIO_JA_CADASTRADO);
+        }
+        return existente ? u.get() : null;
     }
 }

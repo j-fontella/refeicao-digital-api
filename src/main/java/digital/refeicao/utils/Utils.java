@@ -1,41 +1,42 @@
 package digital.refeicao.utils;
 
-import digital.refeicao.domains.Cargo;
-import digital.refeicao.dtos.request.login.UsuarioRequestDTO;
-import digital.refeicao.dtos.response.login.UsuarioCompletoResponseDTO;
-import digital.refeicao.models.login.Conta;
-import digital.refeicao.models.login.Usuario;
-import digital.refeicao.models.requisicao.Erro;
-import org.modelmapper.ModelMapper;
+import digital.refeicao.domains.Erros;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Arrays;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 public class Utils {
 
-    public static Usuario converterUsuarioRequest(UsuarioRequestDTO u){
-        Usuario usuario = new ModelMapper().map(u, Usuario.class);
-        Conta novaConta = new Conta();
-        novaConta.setNome(u.getNomeConta());
-        usuario.setConta(novaConta);
-        usuario.setCargo(Cargo.PROPRIETARIO);
-        usuario.setSenha(Utils.encriptarStringBCrypt(u.getSenha()));
-        usuario.setDocRegistro(u.getDocRegistro());
-        return usuario;
-    }
 
-    public static UsuarioCompletoResponseDTO converterUsuarioCompletoResponseDTO(Usuario u){
-        return new ModelMapper().map(u, UsuarioCompletoResponseDTO.class);
-    }
 
-    public static String encriptarStringBCrypt(String str){
+    public static String criptografarBCrypt(String str){
         return new BCryptPasswordEncoder().encode(str);
     }
 
-    public static Erro gerarErro(String... msgErro){
-        Erro erro = new Erro();
-        Arrays.stream(msgErro).forEach(s -> erro.getErros().add(s));
-        return erro;
+    public static void validarBCrypt(String str, String str2, Erros erro){
+        BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+        if(!bc.matches(str, str2)){
+            throw new SecurityException(erro.toString());
+        }
+    }
+
+    public static String base64Encode(String input) {
+        return Base64.getEncoder().encodeToString(input.getBytes());
+    }
+    public static String encodeBytesToBase64(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+
+    public static byte[] decodeToBytes(String base64) {
+        return Base64.getDecoder().decode(base64);
+    }
+
+    public static String decodeFromBase64(String base64) {
+        return new String(Base64.getDecoder().decode(base64));
     }
 
 }

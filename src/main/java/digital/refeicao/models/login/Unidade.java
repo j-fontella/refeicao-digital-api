@@ -1,7 +1,5 @@
-package digital.refeicao.models.unidade;
+package digital.refeicao.models.login;
 
-import digital.refeicao.models.login.Conta;
-import digital.refeicao.models.produto.Categoria;
 import digital.refeicao.models.produto.Produto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "unidade", schema = "unidade")
+@Table(name = "unidade", schema = "login")
 @Data
 public class Unidade {
 
@@ -25,7 +23,7 @@ public class Unidade {
     private String nome;
 
     @ManyToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name="frk_conta", referencedColumnName = "prk")
+    @JoinColumn(name="frkconta", referencedColumnName = "prk")
     private Conta conta;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "unidade", orphanRemoval = true)
@@ -35,7 +33,7 @@ public class Unidade {
     private boolean matriz;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "frk_unidade_matriz", referencedColumnName = "prk")
+    @JoinColumn(name = "frkunidadematriz", referencedColumnName = "prk")
     private Unidade unidadeMatriz;
 
 

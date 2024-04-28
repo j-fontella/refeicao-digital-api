@@ -47,5 +47,10 @@ public class LoginController {
     public ResponseEntity<?> getUsuarioPorPrk(@PathVariable Long prk) {
         return loginService.getUsuarioPorPrk(prk);
     }
+    @ValidateToken
+    @GetMapping("/unidades/{prkUsuario}")
+    public ResponseEntity<?> getUnidades(@PathVariable Long prkUsuario) {
+        return loginService.getUnidades(prkUsuario);
+    }
 
 }

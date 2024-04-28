@@ -11,6 +11,7 @@ import digital.refeicao.exceptions.NegocioException;
 import digital.refeicao.models.login.Conta;
 import digital.refeicao.models.login.Token;
 import digital.refeicao.models.login.Usuario;
+import digital.refeicao.repositorys.login.UnidadeRepository;
 import digital.refeicao.repositorys.login.UsuarioRepository;
 import digital.refeicao.utils.Utils;
 import org.modelmapper.ModelMapper;
@@ -30,17 +31,19 @@ import static digital.refeicao.utils.Utils.*;
 public class LoginService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UnidadeRepository unidadeRepository;
     private final TokenService tokenService;
     private final JavaMailSender javaMailSender;
     @Autowired
-    public LoginService(UsuarioRepository usuarioRepository, TokenService tokenService, JavaMailSender javaMailSender) {
+    public LoginService(UsuarioRepository usuarioRepository, TokenService tokenService, JavaMailSender javaMailSender, UnidadeRepository unidadeRepository) {
         this.usuarioRepository = usuarioRepository;
         this.tokenService = tokenService;
         this.javaMailSender = javaMailSender;
+        this.unidadeRepository = unidadeRepository;
     }
 
     public ResponseEntity<?> registrarUsuario(UsuarioRequestDTO usuario) {
-        findUsuario(usuario.getPrk(), false);
+        findUsuario(usuario.getEmail(), false);
         usuarioRepository.save(converterUsuarioRequest(usuario));
         return ResponseEntity.ok().build();
     }
@@ -134,5 +137,9 @@ public class LoginService {
             throw new NegocioException(existente ? USUARIO_NAO_ENCONTRADO : USUARIO_JA_CADASTRADO);
         }
         return existente ? u.get() : null;
+    }
+
+    public ResponseEntity<?> getUnidades(Long prkUsuario) {
+        return ResponseEntity.ok().body(unidadeRepository.findUnidadesByUsuario(prkUsuario));
     }
 }

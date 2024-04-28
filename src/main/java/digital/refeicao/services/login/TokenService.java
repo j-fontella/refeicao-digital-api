@@ -19,11 +19,15 @@ import static digital.refeicao.domains.Erros.ACESSO_EXPIRADO;
 @Service
 public class TokenService {
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    private final TokenRepository tokenRepository;
+
+    private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    public TokenService(TokenRepository tokenRepository, UsuarioRepository usuarioRepository) {
+        this.tokenRepository = tokenRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     public void validarToken(String hash, Long prk){
         Optional<Token> tokenQuery = tokenRepository.findByFrkUsuario(prk);

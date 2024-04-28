@@ -1,6 +1,6 @@
 package digital.refeicao.models.produto;
 
-import digital.refeicao.models.unidade.Unidade;
+import digital.refeicao.models.login.Unidade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,11 +26,11 @@ public class Produto {
     private BigDecimal valor;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "frk_categoria", referencedColumnName = "prk")
+    @JoinColumn(name = "frkcategoria", referencedColumnName = "prk")
     private Categoria categoria;
 
     @ManyToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name="frk_unidade", referencedColumnName = "prk")
+    @JoinColumn(name="frkunidade", referencedColumnName = "prk")
     private Unidade unidade;
 
 }

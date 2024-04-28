@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 import static digital.refeicao.domains.Erros.USUARIO_JA_CADASTRADO;
 import static digital.refeicao.domains.Erros.USUARIO_NAO_ENCONTRADO;
+import static javax.persistence.EnumType.STRING;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class Usuario {
     private String nome;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "frk_endereco", referencedColumnName = "prk")
+    @JoinColumn(name = "frkendereco", referencedColumnName = "prk")
     private Endereco endereco;
 
     @Column(columnDefinition = "varchar(14)")
@@ -38,11 +39,11 @@ public class Usuario {
     @Column
     private String senha;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(STRING)
     private Cargo cargo;
 
     @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="frk_conta", referencedColumnName = "prk")
+    @JoinColumn(name="frkconta", referencedColumnName = "prk")
     private Conta conta;
 
 

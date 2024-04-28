@@ -1,6 +1,5 @@
 package digital.refeicao.models.login;
 
-import digital.refeicao.models.unidade.Unidade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

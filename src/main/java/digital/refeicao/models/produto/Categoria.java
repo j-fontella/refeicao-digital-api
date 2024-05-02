@@ -1,5 +1,6 @@
 package digital.refeicao.models.produto;
 
+import digital.refeicao.models.login.Unidade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "produto", schema = "produto")
+@Table(name = "categoria", schema = "produto")
 @Data
 public class Categoria {
     @Id
@@ -18,4 +19,8 @@ public class Categoria {
 
     @Column
     private String descricao;
+
+    @ManyToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name="frkunidade", referencedColumnName = "prk")
+    private Unidade unidade;
 }

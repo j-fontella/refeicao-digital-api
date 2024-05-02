@@ -10,6 +10,7 @@ import digital.refeicao.dtos.response.login.UsuarioResponseDTO;
 import digital.refeicao.exceptions.NegocioException;
 import digital.refeicao.models.login.Conta;
 import digital.refeicao.models.login.Token;
+import digital.refeicao.models.login.Unidade;
 import digital.refeicao.models.login.Usuario;
 import digital.refeicao.repositorys.login.UnidadeRepository;
 import digital.refeicao.repositorys.login.UsuarioRepository;
@@ -137,6 +138,15 @@ public class LoginService {
             throw new NegocioException(existente ? USUARIO_NAO_ENCONTRADO : USUARIO_JA_CADASTRADO);
         }
         return existente ? u.get() : null;
+    }
+
+    public Unidade findUnidade(Long prk, boolean existente){
+        Optional<Unidade> unidade = unidadeRepository.findById(prk);
+        if(unidade.isEmpty()){
+            throw new NegocioException(UNIDADE_NAO_ENCONTRADA);
+
+        }
+        return unidade.get();
     }
 
     public ResponseEntity<?> getUnidades(Long prkUsuario) {
